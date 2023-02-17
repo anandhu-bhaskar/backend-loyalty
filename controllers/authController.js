@@ -7,7 +7,7 @@ const Web3 = require('web3');
 
   // User signup function
 exports.signup = (req, res) => {
-    const { name, email, password,ethereumAddress } = req.body;
+    const { name, email, password,ethereumAddress,ethereumBalance } = req.body;
     
     // Hash password using bcrypt
     bcrypt.hash(password, 10, (err, hash) => {
@@ -24,8 +24,8 @@ exports.signup = (req, res) => {
           name,
           email,
           password: hash,
+          ethereumAddress: ethereumAddress, // Set Ethereum address to new account address
           ethereumBalance: 0, // Initialize balance to 0
-          ethereumAddress: ethereumAddress // Set Ethereum address to new account address
         });
   
         console.log(ethereumAddress)

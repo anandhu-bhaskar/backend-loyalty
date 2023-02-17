@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
+const https = require('https')
+
+const agent = new https.Agent({
+  rejectUnauthorized: false
+})
 
 // Import API routes
 const authRoutes = require('./routes/auth');
