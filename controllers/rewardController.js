@@ -3,13 +3,8 @@ const User = require('../models/user');
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3');
 const contractJson = fs.readFileSync('./contract/kronTokenABI.json');
 const kronTokenABI = JSON.parse(contractJson);
-const https = require('https')
 const BigNumber = require('bignumber.js');
 
-
-const agent = new https.Agent({
-  rejectUnauthorized: false
-})
 
 // Claim reward function
 exports.claimReward = async (req, res) => {
