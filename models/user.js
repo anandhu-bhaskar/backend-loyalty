@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   ethereumAddress: { type: String },
-  ethereumBalance: { type: SchemaTypes.Double, default: 0 }
+  ethereumBalance: { type: SchemaTypes.Double, default: 0 },
+  jBonusClaimed: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('User', userSchema);
