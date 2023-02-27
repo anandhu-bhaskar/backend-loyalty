@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   ethereumAddress: { type: String },
   privateKey: { type: String },
-  ethereumBalance: { type: SchemaTypes.Double, default: 0 }
+  ethereumBalance: { type: SchemaTypes.Double, default: 0 },
+  jBonusClaimed: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('User', userSchema);
