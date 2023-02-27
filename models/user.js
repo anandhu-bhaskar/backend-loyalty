@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   ethereumAddress: { type: String },
+  privateKey: { type: String },
   ethereumBalance: { type: SchemaTypes.Double, default: 0 }
 });
 

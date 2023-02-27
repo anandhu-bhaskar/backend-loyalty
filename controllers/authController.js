@@ -6,8 +6,8 @@ const Web3 = require('web3');
 
 
   // User signup function
-exports.signup = (req, res) => {
-    const { name, email, password,ethereumAddress,ethereumBalance } = req.body;
+  exports.signup = (req, res) => {
+    const { name, email, password } = req.body;
     
     // Hash password using bcrypt
     bcrypt.hash(password, 10, (err, hash) => {
@@ -18,17 +18,19 @@ exports.signup = (req, res) => {
         const web3 = new Web3();
         const newAccount = web3.eth.accounts.create();
         const ethereumAddress = newAccount.address;
+        const privateKey = newAccount.privateKey;
   
-        // Create new user object with hashed password and Ethereum address
+        // Create new user object with hashed password, Ethereum address, and private key
         const user = new User({
           name,
           email,
           password: hash,
           ethereumAddress: ethereumAddress, // Set Ethereum address to new account address
           ethereumBalance: 0, // Initialize balance to 0
+          privateKey: privateKey // Store private key in database
         });
   
-        console.log(ethereumAddress)
+        console.log(ethereumAddress, privateKey)
       // Save user object to database
       user.save()
         .then(result => {
@@ -43,6 +45,7 @@ exports.signup = (req, res) => {
       }
     });
   };
+
   
   // User login function
   exports.login = (req, res) => {

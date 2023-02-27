@@ -1,8 +1,8 @@
 const axios = require('axios');
 const User = require('../models/user');
 
-// Get KRON token balance function
-exports.getKronBalance = (req, res) => {
+// Get Ethereum balance function
+exports.getTrothBalance = (req, res) => {
   const userId = req.userData.userId;
 
   // Find user in database by ID
@@ -12,11 +12,11 @@ exports.getKronBalance = (req, res) => {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      // Get KRON token balance from Ethereum address
-      axios.get(`https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress=${process.env.KRON_CONTRACT_ADDRESS}&address=${user.ethereumAddress}&tag=latest&apikey=${process.env.INFURA_API_KEY}`)
+      // Get Ethereum balance from Alchemy API
+      axios.get(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}?module=account&action=balance&address=${user.ethereumAddress}&tag=latest`)
         .then(response => {
           // Update user's Ethereum balance in database
-          const balance = response.data.result / 10 ** 18;
+          const balance = parseInt(response.data.result) / 10 ** 18;
           user.ethereumBalance = balance;
           user.save();
           
