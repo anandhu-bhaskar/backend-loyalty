@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const checkAuth = require('../middleware/checkAuth');
 const { trothTokenController } = require('../controllers/trothTokenController');
 
 router.get('/totalSupply', trothTokenController.totalSupply);
@@ -11,7 +12,7 @@ router.post('/mint', trothTokenController.mint);
 router.post('/setOwner', trothTokenController.setOwner);
 router.post('/pause', trothTokenController.pause);
 router.post('/unpause', trothTokenController.unpause);
-router.post('/transfer', trothTokenController.transfer);
+router.post('/transfer', checkAuth, trothTokenController.transfer);
 router.post('/transferFrom', trothTokenController.transferFrom);
 router.post('/burn', trothTokenController.burn);
 

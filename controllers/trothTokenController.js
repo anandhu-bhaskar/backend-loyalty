@@ -1,5 +1,5 @@
 const Web3 = require('web3');
-
+const User = require('../models/user');
 const TrothTokenABI = require(process.env.TROTH_TOKEN_CONTRACT_ABI); // Import the TrothToken contract's ABI file
 const web3 = new Web3(process.env.RPC_URL); // Connect to your Ethereum node
 const trothTokenAddress = process.env.TROTH_CONTRACT_ADDRESS; // Get the address of the deployed TrothToken contract from an environment variable
@@ -53,7 +53,9 @@ exports.trothTokenController = {
     try {
       const balance = await trothTokenContract.methods.balanceOf(account).call();
       // Call the balanceOf() function of the TrothToken contract with the account parameter
-      res.status(200).json({ balance });
+      const actualBalance = balance / 10 ** tokenDecimals; // Divide by decimal factor to convert to human-readable value
+      res.status(200).json({ actualBalance });
+      
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
@@ -62,7 +64,8 @@ exports.trothTokenController = {
   mint: async (req, res) => {
     const { to, amount } = req.body;
     try {
-      const bigAmount = web3.utils.toBN(amount); // Convert amount to a BigNumber
+      const bigAmount = web3.utils.toBN(amount);
+      console.log("Big Amount : ",bigAmount); // Convert amount to a BigNumber
   
       // Estimate the gas consumption of the mint() function
       const gasEstimate = await trothTokenContract.methods.mint(to, bigAmount).estimateGas({ from: "0x7edAdF760C4f6e9f492aa9fbC36Fa11499931A0B" });
@@ -119,12 +122,28 @@ exports.trothTokenController = {
     },
     
     transfer: async (req, res) => {
-      const { to, amount, fromAddress,privateKey } = req.body;
+      const userId = req.userData.userId;
+      // Find user in database by ID
+      const { to, amount, from } = req.body;
+      if (from)
+      {
+        fromAddress = from;
+        privateKey =  process.env.META_ACC_PRIV_KEY
+      }
+      else{
+        fromAddress = user.ethereumAddress;
+        privateKey = user.privateKey;
+      }
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      console.log("Ethereum Address:",fromAddress)
+      
+      
       try {
-        const transferAmount = web3.utils.toBN(amount); // Convert amount to a BigNumber
-
-
-        
+        const actualAmount = amount*10**18 // Convert amount to a BigNumber
+        const transferAmount = web3.utils.toBN(actualAmount);
         const transferData = trothTokenContract.methods.transfer(to, transferAmount).encodeABI();
 
         const gasPrice = await web3.eth.getGasPrice();

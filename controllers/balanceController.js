@@ -20,7 +20,9 @@ exports.getTrothBalance = async (req, res) => {
   const balance = await contract.methods.balanceOf(user.ethereumAddress).call(); // Get the balance of the user's Ethereum address
 
   // Update user's Ethereum balance in database
-  const actualBalance = new BigNumber(balance).div(new BigNumber(10).pow(tokenDecimals)).toNumber();
+  const actualBalance = balance / 10 ** tokenDecimals; // Divide by decimal factor to convert to human-readable value
+  console.log("Big Balance:",actualBalance);
+  console.log("Actual Balance:",actualBalance);
   user.ethereumBalance = actualBalance;
   await user.save();
 
