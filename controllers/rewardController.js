@@ -4,7 +4,7 @@ const Web3 = require('web3');
  // Connect to your Ethereum node
 const web3 = new Web3(process.env.RPC_URL);
 const BigNumber = require('bignumber.js');
-const TrothTokenABI = require(process.env.TROTH_TOKEN_CONTRACT_ABI); // Import the TrothToken contract's ABI file
+const TrothTokenABI = require('../contract/TrothToken.json').abi;
 const trothTokenAddress = process.env.TROTH_CONTRACT_ADDRESS; // Get the address of the deployed TrothToken contract from an environment variable
 const trothTokenContract = new web3.eth.Contract(TrothTokenABI.abi, trothTokenAddress);
 
