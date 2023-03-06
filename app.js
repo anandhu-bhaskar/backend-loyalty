@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
-const https = require('https')
+const https = require('https');
 
 const agent = new https.Agent({
-  rejectUnauthorized: false
-})
+  rejectUnauthorized: false,
+});
 
 // Import API routes
 const authRoutes = require('./routes/auth');
@@ -16,6 +16,7 @@ const userRoutes = require('./routes/user');
 const balanceRoutes = require('./routes/balance');
 const rewardRoutes = require('./routes/reward');
 const trothTokenRoutes = require('./routes/trothTokenRoutes');
+const transactionRoutes = require('./routes/transactions');
 
 // Configure body parser to parse request bodies
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -38,9 +39,10 @@ app.use('/api/user', userRoutes);
 app.use('/api/balance', balanceRoutes);
 app.use('/api/reward', rewardRoutes);
 app.use('/api/trothToken', trothTokenRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Start the server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
+  console.log(`Server listening on port ${port}`);
+});
