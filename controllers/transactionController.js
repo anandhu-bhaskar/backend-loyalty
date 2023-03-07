@@ -34,26 +34,41 @@ exports.getTransactions = async (req, res) => {
 
       // Get the user's transactions using the contract's Transfer event
       const events = await contract.getPastEvents('Transfer', {
-        filter: { to: account },
+        filter: { $or: [{ from: account }, { to: account }] },
         fromBlock: 0,
         toBlock: 'latest',
       });
 
       // Map the transaction data to a more readable format
-      const transactions = events
-        .map((event) => {
-          const { transactionHash, returnValues } = event;
+      const transactions = await Promise.all(
+        events.map(async (event) => {
+          const { transactionHash, returnValues, blockNumber } = event;
           const { from, to, value } = returnValues;
+          const transactionType =
+            from.toLowerCase() === account.toLowerCase() ? 'sent' : 'received';
+          const amountInTroth = value / Math.pow(10, 18);
+          const amountInUSD = amountInTroth * 0.014; // Convert troth amount to USD
+          const formattedAmountInUSD = parseFloat(amountInUSD).toFixed(7); // Convert to a string with 2 decimal places
+          const block = await web3.eth.getBlock(blockNumber);
+          const timestamp = block.timestamp;
+          console.log('Timestamp:', timestamp);
           return {
             hash: transactionHash,
             from: from,
             to: to,
-            amount: value / Math.pow(10, 18),
+            amount: amountInTroth.toFixed(3), // Convert to a string with 2 decimal places
+            usdValue: formattedAmountInUSD, // Add USD value to the response
+            type: transactionType,
+            timestamp: timestamp,
           };
         })
-        .slice(0, MAX_TRANSACTIONS);
+      );
 
-      res.json({ message: 'Success', data: transactions });
+      const latestTransactions = transactions
+        .slice(-MAX_TRANSACTIONS)
+        .reverse(); // Get the latest MAX_TRANSACTIONS transactions and reverse the order
+
+      res.json({ message: 'Success', data: latestTransactions });
     }
   } catch (error) {
     console.error(error);

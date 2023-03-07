@@ -15,16 +15,20 @@ exports.getTrothBalance = async (req, res) => {
   // Get KRON token balance from Ethereum address
   const alchemyWeb3 = createAlchemyWeb3(process.env.ALCHEMY_ENDPOINT);
   const contractAddress = process.env.TROTH_CONTRACT_ADDRESS; // Change this
-  const contract = new alchemyWeb3.eth.Contract(trothTokenABI.abi, contractAddress);
+  const contract = new alchemyWeb3.eth.Contract(
+    trothTokenABI.abi,
+    contractAddress
+  );
   const tokenDecimals = await contract.methods.decimals().call(); // Get the token's decimals
   const balance = await contract.methods.balanceOf(user.ethereumAddress).call(); // Get the balance of the user's Ethereum address
 
   // Update user's Ethereum balance in database
   const actualBalance = balance / 10 ** tokenDecimals; // Divide by decimal factor to convert to human-readable value
-  console.log("Big Balance:",actualBalance);
-  console.log("Actual Balance:",actualBalance);
+  console.log('Big Balance:', actualBalance);
+  console.log('Actual Balance:', actualBalance);
+  const usdBalance = (actualBalance * 0.013).toFixed(3);
   user.ethereumBalance = actualBalance;
   await user.save();
 
-  return res.json({ balance: actualBalance });
+  return res.json({ balance: actualBalance, usdBalance });
 };

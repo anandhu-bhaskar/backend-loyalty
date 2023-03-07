@@ -4,10 +4,6 @@ const transactionController = require('../controllers/transactionController');
 const checkAuth = require('../middleware/checkAuth');
 
 // Claim reward endpoint
-router.post(
-  '/get-transactions',
-  checkAuth,
-  transactionController.getTransactions
-);
+router.get('/transactions', checkAuth, transactionController.getTransactions);
 
 module.exports = router;

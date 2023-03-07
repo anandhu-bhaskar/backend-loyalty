@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   ethereumAddress: { type: String },
   privateKey: { type: String },
   ethereumBalance: { type: SchemaTypes.Double, default: 0 },
-  jBonusClaimed: { type: Boolean, default: false }
+  jBonusClaimed: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('User', userSchema);
